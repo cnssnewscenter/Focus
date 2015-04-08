@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../static/css/font.css">
+        <link rel="stylesheet" href="../static/css/semantic.min.css">
+        <script src="../static/js/jquery.min.js"></script>
+        <script src="../static/js/semantic.min.js"></script>
+        <script>
+        $(function(){
+            $("form.form").form({
+                username:{
+                    identifier: "username",
+                    rules:[{
+                        type: "empty",
+                        prompt: "请输入用户名"
+                    }]
+                },password:{
+                    identifier: 'password',
+                    rules:[{
+                        type: "empty",
+                        prompt: "请输入密码"
+                    }]
+                }
+            },{
+                inline: true
+            })
+        })
+        </script>
+    </head>
+    <body>
+        <div class="ui one column stackable center aligned page grid" style="margin: 3rem;">
+            <div class="eight wide column">
+                <form class="ui attached form segment" action="/admin/login" method="POST">
+                    <h2 class="header">后台登陆</h2>
+                    <div class="field">
+                        <label>用户名</label>
+                        <div class="ui left labeled icon input">
+                            <input type="text" name="username" placeholder="用户名">
+                            <i class="user icon"></i>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>密码</label>
+                        <div class="ui left labeled icon input">
+                            <input type="password" name="password" placeholder="密码">
+                            <i class="lock icon"></i>
+                        </div>
+                    </div>
+                    <div class="ui submit green button">
+                        登录
+                    </div>
+                    
+                </form>
+                {% if err_msg %}
+                <div class="ui  bottom attached header error message " id="info">
+                    {{ err_msg }}
+                </div>
+                {% endif %}  
+            </div>
+            <div class="centered aligned sixteen wide column">
+                Powered by CNSS(凝聚网络安全工作室).
+            </div>
+        </div>
+    </body>
+</html>
