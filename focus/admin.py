@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
-from focus.model import db
+# from focus.model import db
 from focus import loginmanager, app
 from flask.ext.login import current_user, login_required, login_user, logout_user
 
@@ -59,7 +59,8 @@ def login():
 @app.route("/admin/dashboard")
 @login_required
 def dashboard():
-    return "WOW"
+    # gathering the projects infomation
+    return render_template("dashboard.html")
 
 
 @app.route("/admin/logout")
