@@ -1,0 +1,47 @@
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}仪表盘{% endblock %}
+{% block menu %}
+    {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
+    {{ menuitem("项目管理", url_for("project_management"), "browser") }}
+    {{ menuitem("通用设置", url_for("general_config"), "configure") }}
+    {{ menuitem("新建项目", url_for("new_project"), "add circle", active=True) }}
+{% endblock %}
+
+{% block content %}
+<div class="sixteen wide column">
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3 class="header">新建项目</h3>
+        </div>
+        <div class="ui secondary segment">
+            <form class="ui form">
+                <div class="two fields">
+                    <div class="field">
+                        <label>项目名称</label>
+                        <input type="text" name="project_name">
+                    </div>
+                    <div class="field">
+                        <label>模板类型</label>
+                        <select class="ui dropdown">
+                                <!-- TODO Gen the all the options -->
+                            <option value="">hjksdhfkjshdf</option>
+                            <option value="asdf">dshjfhakshdflk</option>
+                            <option value="dasf">adsfljaksjdf</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label>备注</label>
+                    <textarea name="comment" width="100%"></textarea>
+                </div>
+                <div class="ui green submit button">新建</div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>$(function(){$('.ui.dropdown').dropdown()})</script>
+{% endblock %}

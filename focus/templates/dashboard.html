@@ -1,63 +1,35 @@
-<!DOCTYPE>
-<html>
-    <head>
-        <link rel="stylesheet" href="{{url_for("static", filename="css/font.css")}}">
-        <link rel="stylesheet" href="{{url_for("static", filename="css/semantic.min.css")}}">
-    </head>
-    <body>
-        <div class="ui page grid" style="padding-top: 3rem;">
-            <div class="sixteen wide column">
-                <div class="ui menu">
-                    <a class="active item">
-                        <i class="home icon"></i> 后台管理
-                    </a>
-                    <a href="all" class="item">
-                        <i class="browser icon"></i> 查看全部
-                    </a>
-                    <a href="logout" class="right red item">
-                        <i class="sign out icon"></i> 退出
-                    </a>
-                </div>
-            </div>
-            <div class="eight wide column">
-                <div class="ui segments">
-                    <div class="ui segment">
-                        <h3 class="header">本日统计数据</h3>
-                    </div>
-                    <div class="ui secondary segment">
-                    </div>
-                </div>
-            </div>
-            <div class="eight wide column">
-                <div class="ui segments">
-                    <div class="ui segment">
-                        <h3 class="header">统计数据</h3>
-                    </div>
-                    <div class="ui secondary segment">
-                    </div>
-                </div>
-            </div>
-            <div class="sixteen wide column">
-                <div class="ui segments">
-                    <div class="ui segment">
-                        <h3 class="header">操作</h3>
-                    </div>
-                    <div class="ui secondary center aligned segment">
-                        <div class="massive ui green button" id="export"><i class="send icon"></i> 导出</div>
-                        <div class="ui indeterminate inverted dimmer">
-                            <div class="ui text loader">正在导出</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="center aligned sixteen wide column">
-                Powered by CNSS(凝聚网络安全工作室).
-            </div>
-            <script src="../static/js/jquery.min.js"></script>
-            <script src="../static/js/semantic.min.js"></script>
-            <script>
-            </script>
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}仪表盘{% endblock %}
+{% block menu %}
+    {{ menuitem("仪表盘", url_for("dashboard"), "dashboard", active=True) }}
+    {{ menuitem("项目管理", url_for("project_management"), "browser") }}
+    {{ menuitem("通用设置", url_for("general_config"), "configure") }}
+    {{ menuitem("新建项目", url_for("new_project"), "add circle") }}
+{% endblock %}
+
+{% block content %}
+    <div class="center aligned sixteen wide column">
+        <div class="ui statistic">
+            <div class="value">22</div>
+            <div class="label">今日浏览量</div>
         </div>
-    </body>
-</html>
+        <div class="ui statistic">
+            <div class="value">22</div>
+            <div class="label">总浏览量</div>
+        </div>
+        <div class="ui statistic">
+            <div class="value">22</div>
+            <div class="label">项目数</div>
+        </div>
+    </div>
+    <div class="sixteen wide column">
+        <div class="ui segments">
+            <div class="ui segment">
+                <h3 class="header">最近一周访问量排名</h3>
+            </div>
+            <div class="ui secondary segment">
+            </div>
+        </div>
+    </div>
+{% endblock %}

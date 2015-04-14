@@ -1,0 +1,39 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{url_for("static", filename="css/font.css")}}">
+        <link rel="stylesheet" href="{{url_for("static", filename="css/semantic.min.css")}}">
+        <script src="{{url_for("static", filename="js/jquery.min.js")}}"></script>
+        <script src="{{url_for("static", filename="js/semantic.min.js")}}"></script>
+        <title>{% block title %}{% endblock %}</title>
+        {% block css %}{% endblock %}
+    </head>
+    <body>
+        <div class="ui page grid" style="padding-top: 3rem;">
+            <div class="sixteen wide column">
+                <div class="ui menu">
+                    {% block menu -%}
+                    {%- endblock %}
+                    <a href="{{ url_for("logout") }}" class="right red item">
+                        <i class="sign out icon"></i> 退出登录
+                    </a>
+                </div>
+            </div>
+            {% block content %}
+            {% endblock %}
+            
+            <!-- Footer -->
+            <div class="center aligned sixteen wide column">
+                Powered by CNSS(凝聚网络安全工作室).
+            </div>
+            
+            {% block js %}{% endblock %}
+        </div>
+    </body>
+</html>
+
+{% macro menuitem(name, href, icon="", active=False)%}
+<a href="{{href}}" class="{{ "active" if active }} item">
+    <i class="{{icon}} icon"></i> {{name}}
+</a>
+{% endmacro %}

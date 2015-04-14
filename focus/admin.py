@@ -1,7 +1,10 @@
 from flask import Flask, request, render_template, redirect, url_for
-# from focus.model import db
-from focus import loginmanager, app
+from focus import loginmanager, app, mongodb
 from flask.ext.login import current_user, login_required, login_user, logout_user
+from werkzeug.utils import secure_filename
+import os
+from datetime import datetime
+import json
 
 
 class User():
@@ -67,3 +70,45 @@ def dashboard():
 def logout():
     logout_user()
     return "您已经成功登出"
+
+
+@app.route("/admin/project/new")
+@login_required
+def new_project():
+    return render_template("new_project.html")
+
+
+@app.route("/admin/config")
+@login_required
+def general_config():
+    return "Not Implied"
+
+
+def allow(filename):
+    return "." in filename and filename.lower().rsplit('.', 1)[1] in app.config['UPLOAD_ALLOWED']
+
+
+@app.route("/admin/upload", methods=["POST"])
+# @login_required
+def upload():
+    file = request.files['file']
+    if file and allow(file.filename):
+        filename = secure_filename(file.filename)
+        t = datetime.now()
+        new_filename = str(int(t.timestamp() * 1000)) + os.path.splitext(filename)[1]
+        path = os.path.join(app.config['UPLOAD_FOLDER'], str(t.year), str(t.month), new_filename)
+        # make the folder
+        os.makedirs(os.path.split(path)[0], exist_ok=True)
+
+        file.save(path)
+        # and save this to the database
+        mongodb['upload'].insert_one({
+            "path": path,
+            "time": t,
+            "size": int(os.stat(path).st_size),
+        })
+        return json.dumps({
+            "err": 0,
+            "path": path
+        })
+
