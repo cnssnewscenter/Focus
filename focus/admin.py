@@ -111,4 +111,3 @@ def upload():
             "err": 0,
             "path": path
         })
-

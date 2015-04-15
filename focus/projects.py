@@ -1,7 +1,10 @@
-from flask import Flask, request, render_template, redirect, url_for
-# from focus.model import db
-from focus import loginmanager, app
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+from focus.errors import *
+from focus import loginmanager, app, mongodb
 from flask.ext.login import current_user, login_required, login_user, logout_user
+from datetime import datetime
+import pickle
+import hmac
 
 
 @app.route("/admin/projects")
@@ -21,11 +24,22 @@ def project_operation(project):
         pass
 
 
-@app.route("/admin/api/new")
+def validType(type_name):
+    if type_name in ["a", 'b', 'c']:
+        return type_name
+    else:
+        raise WrongPostData(1, "错误的参数")
+
+
+@app.route("/admin/api/new", methods=["POST"])
 def new_project_api():
     data = {
-        "project_type": request.form['project_type'],
+        "project_type": validType(request.form['project']),
         "comment": request.form.get('comment', ''),
+        "time": datetime.now(),
+        "name": request.form['name']
     }
-    
+    data['hmac'] = hmac.new(pickle.dumps(data)).hexdigest()
 
+    mongodb['project'].insert_one(data)
+    return redirect("/admin/project/" + data['hmac'])
