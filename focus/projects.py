@@ -31,15 +31,18 @@ def validType(type_name):
         raise WrongPostData(1, "错误的参数")
 
 
-@app.route("/admin/api/new", methods=["POST"])
+@app.route("/admin/api/new_project", methods=["POST"])
 def new_project_api():
     data = {
-        "project_type": validType(request.form['project']),
+        "project_type": validType(request.form['project_type']),
         "comment": request.form.get('comment', ''),
         "time": datetime.now(),
-        "name": request.form['name']
+        "name": request.form['project_name']
     }
     data['hmac'] = hmac.new(pickle.dumps(data)).hexdigest()
 
     mongodb['project'].insert_one(data)
-    return redirect("/admin/project/" + data['hmac'])
+    return jsonify({
+        "id": data['hmac'],
+        'err': 0
+    })

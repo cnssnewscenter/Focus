@@ -23,7 +23,7 @@
                     </div>
                     <div class="field">
                         <label>模板类型</label>
-                        <select class="ui dropdown">
+                        <select name="project_type" class="ui dropdown">
                                 <!-- TODO Gen the all the options -->
                             <option value="">hjksdhfkjshdf</option>
                             <option value="asdf">dshjfhakshdflk</option>
@@ -36,6 +36,7 @@
                     <textarea name="comment" width="100%"></textarea>
                 </div>
                 <div class="ui green submit button">新建</div>
+                <div class="ui error message"></div>
             </form>
         </div>
     </div>
@@ -43,5 +44,49 @@
 {% endblock %}
 
 {% block js %}
-<script>$(function(){$('.ui.dropdown').dropdown()})</script>
+<script src="{{url_for("static", filename='js/api.js')}}"></script>
+<script>
+$(function(){
+    $('.ui.dropdown').dropdown();
+    $('form').form({
+        name: {
+            identifier: "project_name",
+            rules:[{
+                type: "empty",
+                prompt: "请填写项目名称"
+            }]
+        },
+        type: {
+            identifier: "project_type",
+            rules:[{
+                type: "empty",
+                prompt: "请选择项目类型",
+            }],
+        }
+    }, {
+        inline: true
+    }).api({
+        action: "new project",
+        method: "POST",
+        successTest: function(ret){
+            return ret.err == 0;
+        },
+        onSuccess: function(ret){
+            $('form .message').addClass('success').text('成功创建项目，正在进入项目设置')
+            setTimeout(function(){
+                window.location.pathname = "/admin/project/" + ret.id;
+            }, 1000)
+        },
+        onFailure:function(ret){
+            $(this).removeClass('success').addClass('error')
+            $('form .message').addClass('error').text('Error: ' + ret.message + "，Error Code:" + ret.err)
+        },
+        onError: function(ret){
+            $(this).removeClass('success').addClass('error')
+            $('form .message').addClass('error').text("服务器似乎出了一点问题 (O_O)？")
+        }
+    })
+})
+
+</script>
 {% endblock %}

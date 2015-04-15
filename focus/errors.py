@@ -1,4 +1,4 @@
-class APIError(Exception):class
+class APIError(Exception):
     status_code = 500
 
     def __init__(self, err_code, message, status_code=None, payload=None):

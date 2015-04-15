@@ -21,7 +21,7 @@ mongodb = MongoClient(app.config['MONGO_URI'])[app.config['MONGO_DB']]
 @app.errorhandler(APIError)
 def print_the_error(error):
     response = jsonify(error.to_dict())
-    response.status_code = error.status_code
+    # return normal 200 code so we needn't deal the problem in the frontend
     return response
 
 from . import model
