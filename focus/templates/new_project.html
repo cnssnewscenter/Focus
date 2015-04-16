@@ -25,9 +25,10 @@
                         <label>模板类型</label>
                         <select name="project_type" class="ui dropdown">
                                 <!-- TODO Gen the all the options -->
-                            <option value="">hjksdhfkjshdf</option>
-                            <option value="asdf">dshjfhakshdflk</option>
-                            <option value="dasf">adsfljaksjdf</option>
+                            <option value="">请选择项目类型</option>
+                            {% for i,j in project_types.items() %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>

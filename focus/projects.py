@@ -7,6 +7,10 @@ import pickle
 import hmac
 
 
+def gen_all_project_type():
+    return app.blurprints
+
+
 @app.route("/admin/projects")
 def project_management():
     return ""
@@ -25,10 +29,18 @@ def project_operation(project):
 
 
 def validType(type_name):
-    if type_name in ["a", 'b', 'c']:
+    if type_name in gen_all_project_type():
         return type_name
     else:
         raise WrongPostData(1, "错误的参数")
+
+
+@app.route('/test')
+def test():
+    """
+    delete me
+    """
+    return str(app.blueprints)
 
 
 @app.route("/admin/api/new_project", methods=["POST"])

@@ -1,1 +1,2 @@
-from focus import model
+from flask import Blueprint
+from focus import app
