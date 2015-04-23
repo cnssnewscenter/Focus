@@ -17,7 +17,6 @@ loginmanager.init_app(app)
 
 mongodb = MongoClient(app.config['MONGO_URI'])[app.config['MONGO_DB']]
 
-
 @app.errorhandler(APIError)
 def print_the_error(error):
     response = jsonify(error.to_dict())

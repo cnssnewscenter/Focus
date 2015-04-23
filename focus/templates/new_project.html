@@ -26,8 +26,8 @@
                         <select name="project_type" class="ui dropdown">
                                 <!-- TODO Gen the all the options -->
                             <option value="">请选择项目类型</option>
-                            {% for i,j in project_types.items() %}
-                            <option value="{{i}}">{{i}}</option>
+                            {% for i in project_types %}
+                            <option value="{{i.name}}">{{i.title}}</option>
                             {% endfor %}
                         </select>
                     </div>

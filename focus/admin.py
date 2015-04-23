@@ -75,7 +75,7 @@ def logout():
 @app.route("/admin/project/new")
 @login_required
 def new_project():
-    project_types = app.blueprints
+    project_types = [dict(name=i, title=j.TITLE) for i, j in app.blueprints.items()]
     return render_template("new_project.html", project_types=project_types)
 
 
