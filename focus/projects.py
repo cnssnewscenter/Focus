@@ -1,7 +1,8 @@
-from flask import Flask, request, g, jsonify, Response, json
+from flask import request, g, jsonify, Response, json, render_template
 from focus.errors import *
-from focus import loginmanager, app, mongodb
+from focus import loginmanager, app
 from flask.ext.login import current_user, login_required, login_user, logout_user
+from bson.json_util import dumps
 from datetime import datetime
 import pickle
 import hmac
@@ -15,23 +16,24 @@ with app.app_context():
 
 @app.route("/admin/projects")
 def project_management():
-    return ""
+    return render_template("project_list.html")
 
 
-@app.route("/admin/api/project", defaults={"number": None})
-@app.route("/admin/api/project/<project>")
-# @login_required
+@app.route("/admin/project/<project>")
+@app.route("/admin/project", defaults={"project": None})
+@login_required
 def project_operation(project):
     if project:
         # return the info of single project
-        pass
+        data = g.mongodb['meta'].find_one({"hmac": project})
+        return render_template("project_overview.html", data=data, pid=project)
     else:
         # return general infomation
-        pass
+        return 'projects overview'
 
 
 def validType(type_name):
-    if type_name in get_all_project_type():
+    if type_name in [i['name'] for i in get_all_project_type()]:
         return type_name
     else:
         raise WrongPostData(1, "错误的参数")
@@ -54,7 +56,7 @@ def new_project_api():
     }
     data['hmac'] = hmac.new(pickle.dumps(data)).hexdigest()
 
-    mongodb['project'].insert_one(data)
+    g.mongodb['meta'].insert_one(data)
     return jsonify(
         id=data['hmac'],
         err=0

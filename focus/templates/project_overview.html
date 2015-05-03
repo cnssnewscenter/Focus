@@ -4,22 +4,21 @@
 {% block menu %}
     {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
     {{ menuitem("项目列表", url_for("project_management"), "browser") }}
-    {{ menuitem("通用设置", url_for("general_config"), "configure") }}
-    {{ menuitem("新建项目", url_for("new_project"), "add circle", active=True) }}
+    {{ menuitem("项目：" + data.name, url_for("project_operation", project=project) , 'write')}}
 {% endblock %}
 
 {% block content %}
 <div class="sixteen wide column">
     <div class="ui segments">
         <div class="ui segment">
-            <h3 class="header">新建项目</h3>
+            <h3 class="header">项目概览</h3>
         </div>
         <div class="ui secondary segment">
             <form class="ui form">
                 <div class="two fields">
                     <div class="field">
                         <label>项目名称</label>
-                        <input type="text" name="project_name">
+                        <input readonly="readonly"　type="text" name="project_name" value="{{data.name}}">
                     </div>
                     <div class="field">
                         <label>模板类型</label>

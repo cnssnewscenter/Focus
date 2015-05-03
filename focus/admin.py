@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template, redirect, url_for
-from focus import loginmanager, app, mongodb
+from flask import Flask, request, render_template, redirect, url_for, g
+from focus import loginmanager, app
 from flask.ext.login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 import os
@@ -63,7 +63,12 @@ def login():
 @login_required
 def dashboard():
     # gathering the projects infomation
-    return render_template("dashboard.html")
+    data = {
+        "project_number": g.mongodb.meta.projects.count(),
+        "total_click": 0,
+        "new_click": 0
+    }
+    return render_template("dashboard.html", data=data)
 
 
 @app.route("/admin/logout")

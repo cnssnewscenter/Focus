@@ -3,7 +3,7 @@
 {% block title %}仪表盘{% endblock %}
 {% block menu %}
     {{ menuitem("仪表盘", url_for("dashboard"), "dashboard", active=True) }}
-    {{ menuitem("项目管理", url_for("project_management"), "browser") }}
+    {{ menuitem("项目列表", url_for("project_management"), "browser") }}
     {{ menuitem("通用设置", url_for("general_config"), "configure") }}
     {{ menuitem("新建项目", url_for("new_project"), "add circle") }}
 {% endblock %}
@@ -11,15 +11,15 @@
 {% block content %}
     <div class="center aligned sixteen wide column">
         <div class="ui statistic">
-            <div class="value">22</div>
+            <div class="value">{{data.new_click}}</div>
             <div class="label">今日浏览量</div>
         </div>
         <div class="ui statistic">
-            <div class="value">22</div>
+            <div class="value">{{data.total_click}}</div>
             <div class="label">总浏览量</div>
         </div>
         <div class="ui statistic">
-            <div class="value">22</div>
+            <div class="value">{{data.project_number}}</div>
             <div class="label">项目数</div>
         </div>
     </div>

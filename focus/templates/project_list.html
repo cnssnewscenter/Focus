@@ -1,0 +1,35 @@
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}仪表盘{% endblock %}
+{% block menu %}
+    {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
+    {{ menuitem("项目列表", url_for("project_management"), "browser", active=True) }}
+    {{ menuitem("通用设置", url_for("general_config"), "configure") }}
+    {{ menuitem("新建项目", url_for("new_project"), "add circle") }}
+{% endblock %}
+{% block content %}
+<div class="sixteen wide column">
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3 class="header">项目列表</h3>
+        </div>
+        <div class="ui secondary segment">
+            <table class="ui table">
+                <thead>
+                    <tr>
+                        <td>名称</td>
+                        <td>创建时间</td>
+                        <td>访问量</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}
