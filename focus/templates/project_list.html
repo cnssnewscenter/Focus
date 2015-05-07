@@ -21,6 +21,7 @@
                         <td>名称</td>
                         <td>创建时间</td>
                         <td>访问量</td>
+                        <td>操作</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,7 @@
                             <td>{{p.name}}</td>
                             <td>{{p.time}}</td>
                             <td>{{p.click}}</td>
+                            <td><a href="{{url_for('project_operation', project=p.hmac)}}" class="ui positive button">编辑</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

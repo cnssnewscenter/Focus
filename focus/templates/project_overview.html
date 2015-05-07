@@ -4,7 +4,7 @@
 {% block menu %}
     {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
     {{ menuitem("项目列表", url_for("project_management"), "browser") }}
-    {{ menuitem("项目：" + data.name, url_for("project_operation", project=project) , 'write')}}
+    {{ menuitem("项目：" + data.name, url_for("project_operation", project=pid) , 'write')}}
 {% endblock %}
 
 {% block content %}
