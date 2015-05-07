@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, g
+from flask import request, render_template, redirect, url_for
 from focus import loginmanager, app, mongodb
 from flask.ext.login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename

@@ -1,8 +1,7 @@
-from flask import request, g, jsonify, Response, json, render_template
+from flask import request, g, render_template
 from focus.errors import *
-from focus import loginmanager, app, mongodb, views
-from flask.ext.login import current_user, login_required, login_user, logout_user
-from bson.json_util import dumps
+from focus import app, mongodb, views
+from flask.ext.login import login_required
 from datetime import datetime
 import pickle
 import hmac
@@ -16,6 +15,7 @@ with app.app_context():
 
 
 @app.route("/admin/projects")
+@login_required
 def project_management():
     projects = list(mongodb['meta'].find())
     return render_template("project_list.html", projects=projects)
@@ -42,6 +42,7 @@ def validType(type_name):
 
 
 @app.route("/admin/api/new_project", methods=["POST"])
+@login_required
 def new_project_api():
     data = {
         "project_type": validType(request.form['project_type']),

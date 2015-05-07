@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, g, render_template
+from flask import Flask, jsonify, render_template
 from flask.ext.login import LoginManager
 from pymongo import MongoClient
 import os
