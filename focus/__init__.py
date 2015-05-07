@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify, g, render_template
 from flask.ext.login import LoginManager
 from pymongo import MongoClient
 import os
@@ -23,6 +23,12 @@ def print_the_error(error):
     response = jsonify(error.to_dict())
     # return normal 200 code so we needn't deal the problem in the frontend
     return response
+
+
+@app.errorhandler(404)
+def Page_not_find(error):
+    return render_template('404.html')
+
 
 from . import model
 from . import views
