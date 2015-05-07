@@ -18,11 +18,6 @@ loginmanager.init_app(app)
 mongodb = MongoClient(app.config['MONGO_URI'])[app.config['MONGO_DB']]
 
 
-# the g object is freshed every requests , so we should add the db in it
-@app.before_request
-def init_g_value():
-    g.mongodb = mongodb
-
 @app.errorhandler(APIError)
 def print_the_error(error):
     response = jsonify(error.to_dict())

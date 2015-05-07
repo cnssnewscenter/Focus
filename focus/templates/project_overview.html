@@ -1,6 +1,6 @@
 {% extends "admin_base.html" %}
 {% from "admin_base.html" import menuitem %}
-{% block title %}仪表盘{% endblock %}
+{% block title %}{{data.name}} | 项目设置{% endblock %}
 {% block menu %}
     {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
     {{ menuitem("项目列表", url_for("project_management"), "browser") }}
@@ -9,34 +9,29 @@
 
 {% block content %}
 <div class="sixteen wide column">
+    <div class="ui sixteen wide column">
+        这里应该有个插件显示访问两
+    </div>
     <div class="ui segments">
         <div class="ui segment">
-            <h3 class="header">项目概览</h3>
+            <h3 class="header">项目: {{data.name}}</h3>
         </div>
         <div class="ui secondary segment">
             <form class="ui form">
                 <div class="two fields">
                     <div class="field">
                         <label>项目名称</label>
-                        <input readonly="readonly"　type="text" name="project_name" value="{{data.name}}">
+                        <input readonly="readonly"　type="text" value="{{data.name}}">
                     </div>
                     <div class="field">
                         <label>模板类型</label>
-                        <select name="project_type" class="ui dropdown">
-                                <!-- TODO Gen the all the options -->
-                            <option value="">请选择项目类型</option>
-                            {% for i in project_types %}
-                            <option value="{{i.name}}">{{i.title}}</option>
-                            {% endfor %}
-                        </select>
+                        <input readonly="readonly" type="text" value="{{data.project_type}}">
                     </div>
                 </div>
                 <div class="field">
                     <label>备注</label>
-                    <textarea name="comment" width="100%"></textarea>
+                    <textarea name="comment" readonly="readonly" width="100%">{{data.comment}}</textarea>
                 </div>
-                <div class="ui green submit button">新建</div>
-                <div class="ui error message"></div>
             </form>
         </div>
     </div>

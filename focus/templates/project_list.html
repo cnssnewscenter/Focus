@@ -17,12 +17,24 @@
             <table class="ui table">
                 <thead>
                     <tr>
+                        <td>ID</td>
                         <td>名称</td>
                         <td>创建时间</td>
                         <td>访问量</td>
                     </tr>
                 </thead>
+                <tbody>
+                    {% for p in projects %}
+                        <tr>
+                            <td>{{p.hmac}}</td>
+                            <td>{{p.name}}</td>
+                            <td>{{p.time}}</td>
+                            <td>{{p.click}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
+            <div class="ui center aligned header">共 {{ projects | length }} 个项目</div>
         </div>
     </div>
 </div>
