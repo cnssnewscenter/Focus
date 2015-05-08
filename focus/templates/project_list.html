@@ -33,6 +33,8 @@
                             <td>{{p.click}}</td>
                             <td><a href="{{url_for('project_operation', project=p.hmac)}}" class="ui positive button">编辑</a></td>
                         </tr>
+                    {% else %}
+                        <h4 class="ui header">没有项目</h4>
                     {% endfor %}
                 </tbody>
             </table>
@@ -40,10 +42,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block js %}
-<script>
-
-</script>
 {% endblock %}

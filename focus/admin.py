@@ -87,7 +87,7 @@ def new_project():
 @app.route("/admin/config")
 @login_required
 def general_config():
-    return "Not Implied"
+    return render_template('site_config.html')
 
 
 @app.route("/debugger")

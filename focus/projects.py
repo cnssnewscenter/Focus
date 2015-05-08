@@ -28,6 +28,7 @@ def project_operation(project):
     if project:
         # return the info of single project
         data = mongodb['meta'].find_one({"hmac": project})
+        actions = getattr(views, data['project_type']).actions
         return render_template("project_overview.html", data=data, pid=project)
     else:
         # return general infomation

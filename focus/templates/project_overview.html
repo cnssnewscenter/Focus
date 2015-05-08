@@ -34,54 +34,22 @@
                 </div>
             </form>
         </div>
+        <div class="ui segments">
+            <div class="ui segment">
+                <h3 class="header">项目操作</h3>
+            </div>
+            <div class="ui secondary segment">
+                {% for i in actions %}
+                    <a href="{{url_for(i.func, project=pid)}}" class="ui button positive"></a>
+                {% else %}
+                    <h4>没有操作</h4>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
 <script src="{{url_for("static", filename='js/api.js')}}"></script>
-<script>
-$(function(){
-    $('.ui.dropdown').dropdown();
-    $('form').form({
-        name: {
-            identifier: "project_name",
-            rules:[{
-                type: "empty",
-                prompt: "请填写项目名称"
-            }]
-        },
-        type: {
-            identifier: "project_type",
-            rules:[{
-                type: "empty",
-                prompt: "请选择项目类型",
-            }],
-        }
-    }, {
-        inline: true
-    }).api({
-        action: "new project",
-        method: "POST",
-        successTest: function(ret){
-            return ret.err == 0;
-        },
-        onSuccess: function(ret){
-            $('form .message').addClass('success').text('成功创建项目，正在进入项目设置')
-            setTimeout(function(){
-                window.location.pathname = "/admin/project/" + ret.id;
-            }, 1000)
-        },
-        onFailure:function(ret){
-            $(this).removeClass('success').addClass('error')
-            $('form .message').addClass('error').text('Error: ' + ret.message + "，Error Code:" + ret.err)
-        },
-        onError: function(ret){
-            $(this).removeClass('success').addClass('error')
-            $('form .message').addClass('error').text("服务器似乎出了一点问题 (O_O)？")
-        }
-    })
-})
-
-</script>
 {% endblock %}
