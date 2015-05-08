@@ -1,6 +1,6 @@
 from flask import request, g, render_template
 from focus.errors import *
-from focus import app, mongodb, views
+from focus import app, mongodb, views, update_map
 from flask.ext.login import login_required
 from datetime import datetime
 import pickle
@@ -29,7 +29,7 @@ def project_operation(project):
         # return the info of single project
         data = mongodb['meta'].find_one({"hmac": project})
         actions = getattr(views, data['project_type']).actions
-        return render_template("project_overview.html", data=data, pid=project)
+        return render_template("project_overview.html", data=data, pid=project, actions=actions)
     else:
         # return general infomation
         return 'projects overview'
@@ -55,18 +55,8 @@ def new_project_api():
     data['hmac'] = hmac.new(pickle.dumps(data)).hexdigest()
 
     mongodb['meta'].insert_one(data)
-    update_routes()
+    update_map()
     return jsonify(
         id=data['hmac'],
         err=0
     )
-
-
-def update_routes():
-    for i in mongodb.meta.find():
-        logging.info('config the %s', i.hmac)
-        try:
-            getattr(views, i.project_type).new_url(i.hmac)
-        except Exception as err:
-            logging.error("meet error %s", err.with_traceback())
-        logging.info('successfully config the %s', i.hmac)
