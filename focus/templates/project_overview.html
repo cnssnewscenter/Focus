@@ -40,7 +40,7 @@
             </div>
             <div class="ui secondary segment">
                 {% for i, j in actions.items() %}
-                    <a href="{{url_for(j.func, project=pid)}}" class="ui button positive">{{i}}</a>
+                    <a href="{{url_for(data.project_type+"."+j.__name__, p=pid)}}" class="ui button positive">{{i}}</a>
                 {% else %}
                     <h4>没有操作</h4>
                 {% endfor %}

@@ -18,3 +18,8 @@ class APIError(Exception):
 
 class WrongPostData(APIError):
     status_code = 400
+
+
+class NotFound(APIError):
+    status_code = 404
+

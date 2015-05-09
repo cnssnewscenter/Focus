@@ -3,7 +3,8 @@ from flask.ext.login import LoginManager
 from werkzeug.routing import AnyConverter
 from pymongo import MongoClient
 import os
-from .errors import APIError
+from .errors import APIError, NotFound
+
 
 
 app = Flask(__name__)
@@ -46,8 +47,18 @@ def get_view_for_proj(project_id):
 class ProjectType(AnyConverter):
 
     def __init__(self, url_map, *items):
-        items = [i['hmac'] for i in mongodb.meta.find({"project_type": items[0]})]
-        super(ProjectType, self).__init__(url_map, *items)
+        self.projs = [i['hmac'] for i in mongodb.meta.find({"project_type": items[0]})]
+        super(ProjectType, self).__init__(url_map, *self.projs)
+
+    def to_python(self, value):
+        return value
+
+    def to_url(self, value):
+        if value in self.projs:
+            return value
+        else:
+            raise NotFound(404, "No Such Project")
+
 
 app.url_map.converters['proj'] = ProjectType
 

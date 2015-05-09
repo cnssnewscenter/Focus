@@ -6,8 +6,19 @@ NAME = "slide"
 main = Blueprint(NAME, __name__, template_folder="templates")
 app.register_blueprint(main)
 main.TITLE = "多图全屏轮播"
+actions = {}
 
-def register_action(name):
+def register_action(name): 
+    def wrapper(func):
+        actions[name] = func
+        print(name, func)
+        def do(*args, **kwargs):
+            return func(*args, **kwargs)
+
+        do.__name__ = func.__name__
+        # recover the func name
+        return do
+    return wrapper
 
 
 def init():
@@ -21,9 +32,8 @@ def init():
 
 
 @main.route("/admin/project/<proj(slide):p>/change_pics")
-def pics(p):
-    return "Change Pic"
+@register_action('上传图片')
+def change_pics(p):
+    return "Change Pic of " + p
 
-actions = {
-    "上传图片": pics
-}
+print(actions)
