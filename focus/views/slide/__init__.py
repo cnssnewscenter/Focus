@@ -31,9 +31,9 @@ def init():
     pass
 
 
-@main.route("/admin/project/<proj(slide):p>/change_pics")
-@register_action('上传图片')
-def change_pics(p):
+@main.route("/admin/project/<proj(slide):project>/change_pics")
+@register_action('图片管理')
+def pictures_management(project):
     return "Change Pic of " + p
 
 print(actions)

@@ -1,10 +1,12 @@
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, send_from_directory, abort
 from focus import loginmanager, app, mongodb
+from focus.errors import WrongPostData
 from flask.ext.login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
 import json
+from bson.objectid import ObjectId
 
 
 class User():
@@ -103,22 +105,42 @@ def allow(filename):
 # @login_required
 def upload():
     file = request.files['file']
+    print(file.filename)
     if file and allow(file.filename):
         filename = secure_filename(file.filename)
         t = datetime.now()
         new_filename = str(int(t.timestamp() * 1000)) + os.path.splitext(filename)[1]
-        path = os.path.join(app.config['UPLOAD_FOLDER'], str(t.year), str(t.month), new_filename)
+        path = os.path.join(str(t.year), str(t.month), new_filename)
+        saved_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
         # make the folder
-        os.makedirs(os.path.split(path)[0], exist_ok=True)
+        print(path,saved_path, os.getcwd())
+        os.makedirs(os.path.split(saved_path)[0], exist_ok=True)
 
-        file.save(path)
+        file.save(saved_path)
         # and save this to the database
-        mongodb['upload'].insert_one({
+        record = mongodb['upload'].insert_one({
             "path": path,
             "time": t,
-            "size": int(os.stat(path).st_size),
+            "size": int(os.stat(saved_path).st_size),
         })
         return json.dumps({
             "err": 0,
-            "path": path
+            # "path": path,
+            "fid": str(record.inserted_id)
         })
+    else:
+        raise WrongPostData(1, "no avaliable file uploaded")
+
+@app.route("/u/<path:p>")
+def static_file(p):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], p)
+    # todo use configuable path
+
+
+@app.route("/f/<fid>")
+def uploaded_file(fid):
+    file = mongodb.upload.find_one({"_id": ObjectId(fid)})
+    if file:
+        return redirect(url_for('static_file', p=file['path']), 301)
+    else:
+        abort(404)

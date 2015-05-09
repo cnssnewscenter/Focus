@@ -12,3 +12,7 @@ view 文件夹下是全部的目标代码，每个文件夹是一个模板
 # Templates
 
 围绕 Blueprints 构建结构
+
+# 上传接口
+
+全部的数据保存在 `upload` 中，以 file 接口 301 返回文件

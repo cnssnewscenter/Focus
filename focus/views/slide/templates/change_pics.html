@@ -1,0 +1,51 @@
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}仪表盘{% endblock %}
+{% block menu %}
+    {{ menuitem("项目概览", url_for("project_operation", project=pid), "setting") }}
+    {{ menuitem("图片管理", url_for("pictures_management", project=pid), "sitemap", active=True) }}
+{% endblock %}
+
+{% block content %}
+    <div class="sixteen wide column">
+        <div class="ui segments">
+            <div class="ui segment">
+                <h3 class="header">图片列表</h3>
+            </div>
+            <div class="ui secondary segment">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>序号</td>
+                            <td>预览</td>
+                            <td>说明文字</td>
+                            <td>操作</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in pics %}
+                        <tr>
+                            <td>{{i.id}}</td>
+                            <td><a href="" target="_blank"><img src="{{i.pic}}" alt=""></a></td>
+                            <td>{{i.text}}</td>
+                            <td><div class="ui buttons">
+                                <div class="ui button">删除</div>
+                                <div class="ui button">修改文字</div>
+                                <div class="ui button">上移</div>
+                                <div class="ui button">下移</div>
+                            </div></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+<script>
+    var id = {{pid | tojson}};
+    $.    
+</script>
+
+{% endblock %}
