@@ -5,12 +5,14 @@ from flask.ext.login import login_required
 from datetime import datetime
 import pickle
 import hmac
-import logging
 
 
 def get_all_project_type():
     return [dict(name=i, title=j.TITLE) for i, j in app.blueprints.items()]
-with app.app_context():
+
+
+@app.before_request
+def init_g():
     g.get_all_project_type = get_all_project_type
 
 
@@ -28,7 +30,8 @@ def project_operation(project):
     if project:
         # return the info of single project
         data = mongodb['meta'].find_one({"hmac": project})
-        actions = getattr(views, data['project_type']).actions
+        actions = getattr(views, data['project_type']).main.actions
+        # todo: use blueprints to struct the all vars.
         return render_template("project_overview.html", data=data, pid=project, actions=actions)
     else:
         # return general infomation

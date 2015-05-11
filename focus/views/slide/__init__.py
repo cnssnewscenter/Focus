@@ -1,16 +1,15 @@
-from flask import Blueprint, render_template
-from focus import app, mongodb, send_from_directory
+from flask import Blueprint, render_template, send_from_directory
+from focus import mongodb
 
 NAME = "slide"
 main = Blueprint(NAME, __name__, template_folder="templates")
-app.register_blueprint(main)
 main.TITLE = "多图全屏轮播"
-actions = {}
+main.actions = {}
 
 
 def register_action(name):
     def wrapper(func):
-        actions[name] = func
+        main.actions[name] = func
 
         def do(*args, **kwargs):
             return func(*args, **kwargs)

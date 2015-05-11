@@ -6,7 +6,6 @@ import os
 from .errors import APIError, NotFound
 
 
-
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
@@ -28,8 +27,9 @@ def print_the_error(error):
 
 
 @app.errorhandler(404)
+@app.errorhandler(NotFound)
 def Page_not_find(error):
-    return render_template('404.html')
+    return render_template('404.html'), 404
 
 
 def find_self_projects(project_type):
@@ -47,18 +47,10 @@ def get_view_for_proj(project_id):
 class ProjectType(AnyConverter):
 
     def __init__(self, url_map, *items):
+        print("This is loaded")
         self.projs = [i['hmac'] for i in mongodb.meta.find({"project_type": items[0]})]
+        print(url_map, items)
         super(ProjectType, self).__init__(url_map, *self.projs)
-
-    def to_python(self, value):
-        return value
-
-    def to_url(self, value):
-        if value in self.projs:
-            return value
-        else:
-            raise NotFound(404, "No Such Project")
-
 
 app.url_map.converters['proj'] = ProjectType
 

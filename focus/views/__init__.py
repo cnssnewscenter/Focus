@@ -1,4 +1,5 @@
-from flask import Blueprint
-from focus import app, mongodb
+from focus import app
 from . import slide
 # register all the blueprint here
+
+app.register_blueprint(slide.main)

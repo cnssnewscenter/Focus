@@ -113,7 +113,7 @@ def upload():
         path = os.path.join(str(t.year), str(t.month), new_filename)
         saved_path = os.path.join(app.config['UPLOAD_FOLDER'], path)
         # make the folder
-        print(path,saved_path, os.getcwd())
+        print(path, saved_path, os.getcwd())
         os.makedirs(os.path.split(saved_path)[0], exist_ok=True)
 
         file.save(saved_path)
@@ -130,6 +130,7 @@ def upload():
         })
     else:
         raise WrongPostData(1, "no avaliable file uploaded")
+
 
 @app.route("/u/<path:p>")
 def static_file(p):
