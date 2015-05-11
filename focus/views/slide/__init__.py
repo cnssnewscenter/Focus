@@ -11,7 +11,6 @@ actions = {}
 def register_action(name): 
     def wrapper(func):
         actions[name] = func
-        print(name, func)
         def do(*args, **kwargs):
             return func(*args, **kwargs)
 
@@ -35,5 +34,3 @@ def init():
 @register_action('图片管理')
 def pictures_management(project):
     return "Change Pic of " + p
-
-print(actions)
