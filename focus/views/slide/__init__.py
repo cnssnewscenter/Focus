@@ -82,9 +82,11 @@ def slide_custom_css(project):
 @addClick
 def slide_index(project):
     title = mongodb.meta.find_one({"hmac": project}).get('title')
-    pics = [i.name for i in mongodb[project].find()]
+    things = list(sorted(mongodb[project].pictures.find(), key=lambda x: x['order']))
+    pics = ["/f/"+i['file'] for i in things]
+    words = [i['info'] for i in things]
     css = mongodb[project].find_one({'id': 'css'})  # should avoid injection
-    return render_template("index.html", pics=pics, css=css, title=title)
+    return render_template("index.html", pics=pics, css=css, title=title, words=words)
 
 
 @main.route("/p/<proj(slide):project>/<path:static>")
