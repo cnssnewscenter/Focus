@@ -1,0 +1,171 @@
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}上传管理{% endblock %}
+{% block menu %}
+    {{ menuitem("仪表盘", url_for("dashboard"), "dashboard") }}
+    {{ menuitem("文件管理", url_for('upload_overview'), "grid layout") }}
+{% endblock %}
+
+{% block content %}
+<div class="sixteen wide column" id="main">
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3 class="header">上传的文件</h3>
+        </div>
+        <div class="ui secondary segment">
+
+
+            <div class="ui grid">
+                <div class="sixteen wide column">
+                    <div class="ui buttons">
+                        <div class="ui positive button" v-on="click: upload.show">上传</div>
+                    </div>
+                </div>
+                <div class="sixteen wide column">
+                    <div class="ui five cards">
+                        <div class="card" v-repeat='pics'>
+                            <div class="image" >
+                                <img v-attr="src:pre">
+                                <span></span>
+                            </div>
+                            <div class="content">
+                                <a target="_blank" href="{[url]}">{[name ? name : '没有文件名']}</a>
+                                <p>{[time]}</p>
+                                <div class="ui form">
+                                    <div class="ui mini fluid input" >
+                                      <input type="text" readonly v-on="click: select($event)" value="{[id]}" class=" tips" data-content="按 Ctrl C 来复制">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sixteen wide centered center aligned column">
+                    <div class="ui centered pagination menu">
+                      <a class="icon item">
+                        <i class="left arrow icon" v-on="click:prev"></i>
+                      </a>
+                      <a class="active item">{[page]}</a>
+                      <a class="icon item">
+                        <i class="right arrow icon" v-on='click:next'></i>
+                      </a>
+                    </div>
+                    <div class="header">共 {[max]} 页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    上传文件
+  </div>
+  <div class="content">
+    <form class="ui form">
+       <input type="file" name="file" accept="image/*">
+       <div class="ui progress" v-if='uploading'>
+           <div class="bar">
+               <div class="progress"></div>
+           </div>
+       </div>
+    </form>
+  </div>
+  <div class="actions">
+    <div class="ui green submit button">上传</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{{url_for("static", filename="js/jquery.liteuploader.js")}}"></script>
+<script src="{{url_for("static", filename="js/superagent.js")}}"></script>
+<script src="{{url_for("static", filename="js/vue.min.js")}}"></script>
+<script>
+    Vue.config.delimiters=['{[', ']}'];
+    $('.tips').popup({
+        on: 'manual',
+        position: 'bottom left',
+    })
+    
+    var upload = new Vue({
+        el: ".ui.modal",
+        methods: {
+            show: function(){
+                $(this.$el).modal('show')
+            }
+        },
+        created: function(){
+            var self = this
+            $(".submit", this.$el).unbind('click')
+            $('input[type=file]', this.$el).liteUploader({
+                script: '/admin/upload',
+                clickElement: $('.submit.button'),
+                changeHandler: false
+            }).on('lu:before', function(){
+                self.uploading = true
+            }).on('lu:progress', function (e, percentage) {
+                $('.ui.progress', self.$el).progress({
+                    precent:percentage
+                })
+            }).on('lu:success', function(e, response){
+                self.uploading = false
+                if (!response.err){
+                    $('input[type=file]').val("")
+                    $(this.$el).modal("hidden")
+                    library.get(library.page)
+                }
+            })
+        }
+    })
+    var library = new Vue({
+        el: "#main",
+        data: {
+           page : 1,
+           pics : [],
+           max : undefined,
+           upload: upload
+
+        },
+        methods:{
+            get: function(page){
+                var self = this;
+                request("/admin/uploads")
+                    .query({p: page})
+                    .end(function(err, response){
+                        if (!err){
+                            var data = response.body.data
+                            self.max = response.body.all
+                            data.forEach(function (i){
+                                i.url = "/f/" + i.id
+                                var ext = i.path.split('.').slice(-1)[0].toLowerCase()
+                                i['pre'] = ['jpg', 'jpeg', 'gif', 'bmp', 'png'].indexOf(ext) >= 0 ? i.url : "none"
+                                i.time = new Date(i.time).toLocaleString();
+                            })
+                            self.pics = data
+                            self.page = page
+                        }else{
+                            alert(err)
+                        }
+                    })
+            },
+            next: function(){
+                if(this.page < this.max){
+                    this.get(this.page + 1)
+                }
+            },
+            prev: function(){
+                if (this.page > 1){
+                    this.get(this.page - 1)
+                }
+            },
+            select:function(e){
+                $(e.target).focus().select().popup("show")
+            }
+        },
+        created: function(){
+            this.get(1)
+        }
+    })    
+</script>
+{% endblock %}

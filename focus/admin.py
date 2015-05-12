@@ -6,7 +6,8 @@ from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
 from bson.objectid import ObjectId
-
+import math
+import pymongo
 
 class User():
 
@@ -27,7 +28,6 @@ class User():
         return "admin"
 
 user = User()
-
 
 @loginmanager.user_loader
 def load_user(userid):
@@ -121,10 +121,10 @@ def upload():
             "path": path,
             "time": t,
             "size": int(os.stat(saved_path).st_size),
+            "name": file.filename
         })
         return jsonify(
             err=0,
-            # "path": path,
             fid=str(record.inserted_id)
         )
     else:
@@ -140,3 +140,23 @@ def uploaded_file(fid):
             abort(404)
     except:
         abort(404)
+
+@app.route('/admin/uploader')
+@login_required
+def upload_overview():
+    return render_template("upload.html")
+
+@app.route("/admin/uploads")
+# @login_required
+def api_uploads():
+    page = int(request.args.get("p", 1))
+    if page <= 0:
+        page = 1
+    ret = list(mongodb.upload.find().sort("time", pymongo.DESCENDING).skip(50 * (page - 1)).limit(50))
+    for i in ret:
+        i['id'] = str(i.pop('_id'))
+    all_length = math.ceil(mongodb.upload.count() / 50)
+    return jsonify(
+        data=ret,
+        all=all_length
+    )

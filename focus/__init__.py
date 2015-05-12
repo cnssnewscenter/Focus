@@ -5,6 +5,9 @@ from pymongo import MongoClient
 import os
 from .errors import APIError, NotFound
 import functools
+from json import JSONEncoder
+from datetime import datetime
+
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -66,6 +69,20 @@ def update_map():
             i.compile()
             print("update the route for {}".format(i.rule))
 
+class CustomJSONEncoder(JSONEncoder):
+
+    def default(self, obj):
+        try:
+            if isinstance(obj, datetime):
+                return obj.isoformat() + '+08:00'
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        return JSONEncoder.default(self, obj)
+
+app.json_encoder = CustomJSONEncoder
 
 from . import views
 from . import admin
