@@ -1,11 +1,10 @@
-from flask import request, render_template, redirect, url_for, send_from_directory, abort
+from flask import request, render_template, redirect, url_for, send_from_directory, abort, jsonify
 from focus import loginmanager, app, mongodb
 from focus.errors import WrongPostData
 from flask.ext.login import current_user, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
-import json
 from bson.objectid import ObjectId
 
 
@@ -123,25 +122,21 @@ def upload():
             "time": t,
             "size": int(os.stat(saved_path).st_size),
         })
-        return json.dumps({
-            "err": 0,
+        return jsonify(
+            err=0,
             # "path": path,
-            "fid": str(record.inserted_id)
-        })
+            fid=str(record.inserted_id)
+        )
     else:
         raise WrongPostData(1, "no avaliable file uploaded")
 
-
-@app.route("/u/<path:p>")
-def static_file(p):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], p)
-    # todo use configuable path
-
-
 @app.route("/f/<fid>")
 def uploaded_file(fid):
-    file = mongodb.upload.find_one({"_id": ObjectId(fid)})
-    if file:
-        return redirect(url_for('static_file', p=file['path']), 301)
-    else:
+    try:
+        file = mongodb.upload.find_one({"_id": ObjectId(fid)})
+        if file:
+            return send_from_directory(app.config['UPLOAD_FOLDER'], file['path'])
+        else:
+            abort(404)
+    except:
         abort(404)

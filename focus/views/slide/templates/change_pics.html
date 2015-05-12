@@ -13,7 +13,7 @@
                 <h3 class="header">图片列表</h3>
             </div>
             <div class="ui attached secondary segment">
-                <table>
+                <table class='ui table'>
                     <thead>
                         <tr>
                             <td>序号</td>
@@ -24,15 +24,15 @@
                     </thead>
                     <tbody>
                         {% for i in pics %}
-                        <tr>
-                            <td>{{i.id}}</td>
-                            <td><a href="" target="_blank"><img src="{{i.pic}}"></a></td>
-                            <td>{{i.text}}</td>
+                        <tr data-fid="{{i.file}}" data-order="{{i.order}}" data-info={{i.info | tojson}}>
+                            <td>{{i.order}}</td>
+                            <td><a href="/f/{{i.file}}" target="_blank"><img class='ui small image' src="/f/{{i.file}}"></a></td>
+                            <td>{{i.info}}</td>
                             <td><div class="ui buttons">
-                                <div class="ui button">删除</div>
-                                <div class="ui button">修改文字</div>
-                                <div class="ui button">上移</div>
-                                <div class="ui button">下移</div>
+                                <div class="ui del red button">删除</div>
+                                <div class="ui yellow change button">修改文字</div>
+                                <div class="ui green up button">上移</div>
+                                <div class="ui green down button">下移</div>
                             </div></td>
                         </tr>
                         {% endfor %}
@@ -47,16 +47,24 @@
     <div class="ui modal">
       <i class="close icon"></i>
       <div class="header">
-        上传图片
+        添加
       </div>
       <div class="content">
-        <form class="ui form">
-           文字说明
+        <form class="ui form" id='target'>
+           <h4 class="ui head">
+               文字说明
+           </h4>
+           <textarea name="info" id='info'></textarea>
+           <h4 class="ui head">
+               背景图片
+           </h4>
+           <input type="file" name="file" accept="image/*" id='file'>
+           <div class="ui positive button" id='upload'>上传</div>
         </form>
       </div>
       <div class="actions">
         <div class="ui button">取消</div>
-        <div class="ui positive button">确认</div>
+        <div class="ui positive button" id='submit'>确认</div>
       </div>
     </div>
 {% endblock %}
@@ -64,12 +72,88 @@
 <script src="{{url_for("static", filename="js/jquery.liteuploader.js")}}"></script>
 <script>
     var id = {{project | tojson}};
+    function reload(){
+        window.location.reload()
+    }
     $('.ui.modal').modal()
+
+    $('.button.up').click(function(){
+        $.ajax('{{url_for("slide.slide_pictures_management", project=project)}}', {
+            data: {
+                "fid": $(this).parents('tr').data('fid'),
+                "order": $(this).parents('tr').data('order') - 1
+            },
+            method: 'POST',
+            success: reload
+        });
+    })
+    $('.button.change').click(function(){
+        $('#upload').remove();
+        $('#file').remove()
+        $('#target').append('<img class="ui small image" src="/f/'+$(this).parents('tr').data('fid')+'">').append('<input value="' + $(this).parents('tr').data('fid') + '" name="fid" hidden>')
+        console.log($(this).parents('tr').data('info'))
+        $('#info').val(JSON.parse('"'+ $(this).parents('tr').data('info') + '"'))
+        $('#submit').unbind('click').click(function(){
+            $('#target').addClass('loading')
+            $.ajax('{{url_for("slide.slide_pictures_management", project=project)}}', {
+                data: $('#target').serialize(),
+                method: 'POST',
+                success: reload
+            });
+        })
+        $('.ui.modal').modal('show')
+    })
+    $('.button.del').click(function(){
+        $.ajax('{{url_for("slide.slide_pictures_management", project=project)}}', {
+            data: {
+                "fid": $(this).parents('tr').data('fid'),
+            },
+            method: 'DELETE',
+            success: reload
+        });
+    })
+    $('.button.down').click(function(){
+        var self = this;
+        $.ajax('{{url_for("slide.slide_pictures_management", project=project)}}', {
+            data: {
+                "fid": $(this).parents('tr').data('fid'),
+                "order": $(this).parents('tr').data('order') + 1
+            },
+            method: 'POST',
+            success: reload
+        });
+    })
     $("#add").click(function(){
         $('.ui.modal').modal("show")
+        $('#submit').unbind('click').click(function(){
+            $('#target').addClass('loading')
+            $.ajax('{{url_for("slide.slide_pictures_management", project=project)}}', {
+                data: $('#target').serialize(),
+                method: 'PUT',
+                success: reload
+            });
+        })
     })
-
-    $()
+    $('input[type=file]').liteUploader({
+        script: '/admin/upload',
+        clickElement: $('#upload'),
+        changeHandler: false
+    }).on('lu:before', function(){
+        $('#target').append('<div class="ui teal progress"><div class="bar"><div class="progress"></div></div></div>')
+    }).on('lu:progress', function (e, percentage) {
+        console.log(percentage)
+        $('.ui.progress').progress({
+            precent:percentage
+        })
+    }).on('lu:success', function(e, response){
+        $('.ui.progress').hide(500)
+        if (!response.err){
+            $('input[type=file]').remove()
+            console.log(response['fid'])
+            $('#upload').remove()
+            $('#target').append('<input value="' + response.fid + '" name="fid" hidden>').append('<img class="ui small image" src="/f/'+response.fid+'">')
+        }
+    })
 </script>
 
 {% endblock %}

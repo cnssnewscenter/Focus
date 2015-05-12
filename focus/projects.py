@@ -1,4 +1,4 @@
-from flask import request, g, render_template
+from flask import request, g, render_template, jsonify
 from focus.errors import *
 from focus import app, mongodb, views, update_map
 from flask.ext.login import login_required
@@ -53,6 +53,7 @@ def new_project_api():
         "comment": request.form.get('comment', ''),
         "time": datetime.now(),
         "name": request.form['project_name'],
+        "title": request.form['title'],
         "click": 0
     }
     data['hmac'] = hmac.new(pickle.dumps(data)).hexdigest()
