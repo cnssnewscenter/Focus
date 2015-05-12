@@ -4,7 +4,7 @@ from werkzeug.routing import AnyConverter
 from pymongo import MongoClient
 import os
 from .errors import APIError, NotFound
-
+import functools
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -44,12 +44,17 @@ def get_view_for_proj(project_id):
         return None
 
 
+def addClick(func):
+    @functools.wraps(func)
+    def view_wrapper(*arg, **kwargs):
+        return func(*arg, **kwargs)
+    return func
+
+
 class ProjectType(AnyConverter):
 
     def __init__(self, url_map, *items):
-        print("This is loaded")
         self.projs = [i['hmac'] for i in mongodb.meta.find({"project_type": items[0]})]
-        print(url_map, items)
         super(ProjectType, self).__init__(url_map, *self.projs)
 
 app.url_map.converters['proj'] = ProjectType

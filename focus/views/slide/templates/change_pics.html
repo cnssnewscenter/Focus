@@ -2,8 +2,8 @@
 {% from "admin_base.html" import menuitem %}
 {% block title %}仪表盘{% endblock %}
 {% block menu %}
-    {{ menuitem("项目概览", url_for("project_operation", project=pid), "setting") }}
-    {{ menuitem("图片管理", url_for("pictures_management", project=pid), "sitemap", active=True) }}
+    {{ menuitem("项目概览", url_for("project_operation", project=project), "setting") }}
+    {{ menuitem("图片管理", url_for("slide.slide_pictures_management", project=project), "sitemap", active=True) }}
 {% endblock %}
 
 {% block content %}
@@ -12,7 +12,7 @@
             <div class="ui segment">
                 <h3 class="header">图片列表</h3>
             </div>
-            <div class="ui secondary segment">
+            <div class="ui attached secondary segment">
                 <table>
                     <thead>
                         <tr>
@@ -26,7 +26,7 @@
                         {% for i in pics %}
                         <tr>
                             <td>{{i.id}}</td>
-                            <td><a href="" target="_blank"><img src="{{i.pic}}" alt=""></a></td>
+                            <td><a href="" target="_blank"><img src="{{i.pic}}"></a></td>
                             <td>{{i.text}}</td>
                             <td><div class="ui buttons">
                                 <div class="ui button">删除</div>
@@ -39,13 +39,37 @@
                     </tbody>
                 </table>
             </div>
+            <ui class="ui fluid positive bottom attached button" id="add">
+                添加
+            </ui>
         </div>
+    </div>
+    <div class="ui modal">
+      <i class="close icon"></i>
+      <div class="header">
+        上传图片
+      </div>
+      <div class="content">
+        <form class="ui form">
+           文字说明
+        </form>
+      </div>
+      <div class="actions">
+        <div class="ui button">取消</div>
+        <div class="ui positive button">确认</div>
+      </div>
     </div>
 {% endblock %}
 {% block js %}
+<script src="{{url_for("static", filename="js/jquery.liteuploader.js")}}"></script>
 <script>
-    var id = {{pid | tojson}};
-    $.    
+    var id = {{project | tojson}};
+    $('.ui.modal').modal()
+    $("#add").click(function(){
+        $('.ui.modal').modal("show")
+    })
+
+    $()
 </script>
 
 {% endblock %}

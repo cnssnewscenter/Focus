@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="author" content="CNSS-qszy,CNSS-fceek,CNSS-42" />
+<meta name="copyright" content="2014 Cnss@UESTC" />
+
+<title>{{title}}</title>
+
+<link rel="stylesheet" type="text/css" href="css/bgstretcher.css" />
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/bgstretcher.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
+<script type="text/javascript" src="js/jquery-migrate-1.2.1.min.js"></script>
+</head>
+<body>
+    <a href="javascript:void(0);" id="prev">‹</a>
+    <a href="javascript:void(0);" id="next">›</a>
+    
+    <div class="intro">
+    	<ul>
+    		<li class="active">
+    			<div class="tip">
+					<p style="text-align: left;">青春点燃梦想，梦想照亮青春。<br /><span style="margin-left: 2em;">年轻的小伙伴们，一起追梦吧，我在电子科技大学品学楼等你！</span></p>
+	    			<h4><span class="name">黄才丁</span> 政治与公共管理学院</h4>
+    			</div>
+    		</li>
+    		<li>
+    			<div class="tip" style="right: 0;bottom: 15%;">
+					<p>奇妙的磁场、电场，美观的波形、电路，复杂的器件、系统，无尽的智慧火花，<br />方寸之间的精彩，比用风筝捕捉雷电更刺激，比用钨丝做电灯更好玩！<br />创新有我，一起来体验创新的乐趣吧，我在求知的路上等你！</p>
+	    			<h4><span class="name">朱广成</span> 电子工程学院</h4>
+    			</div>
+    		</li>
+    		<li>
+    			<div class="tip" style="bottom: 15%;">
+					<p>八角书斋，书韵飘香。既有高大上的现代化设施，又不乏古色古香的雅致韵味。<br />享受这一方宁静，在知识海洋尽情遨游，不止有我。<br />一起读书吧，我在电子科技大学图书馆等你！</p>
+	    			<h4><span class="name">王蓉</span> 机械电子工程学院</h4>
+    			</div>
+    		</li>
+    		<li>
+    			<div class="tip">
+					<p>享受学习，享受风景！<br />漫步银杏大道，一路领略生态校园的多彩，和那些匆匆而过的单车和背影。<br />一起奔驰吧，我在电子科技大学银杏大道等你！</p>
+	    			<h4><span class="name">牛智昊</span> 英才实验学院</h4>
+    			</div>
+    		</li>
+            <li>
+                <div class="tip">
+                    <p style="margin: 10px 7em 0 0; text-align: left;">“技术控”的精彩世界，比夺得竞赛冠军更让人着迷！<br />机械设计的创意，算法改进的智慧，鏖战通宵的苦乐……</p>
+                    <p style="margin: 0 0 10px 0;">一起奋战吧，我在电子科技大学机器人队等你！</p>
+                    <h4><span class="name">张毅</span> 通信与信息工程学院</h4>
+                </div>
+            </li>
+    		<li>
+    			<div class="tip" style="right: 0; bottom: 10%;">
+					<p>背靠散发书香气息的图书馆，面朝闪烁着粼粼波光的西湖，在这片绿油油的草地上，看看书，聊聊天。<br />一起来电子科技大学吧，我在美丽的校园等你！</p>
+	    			<h4><span class="name">刘丽萍</span> 外国语学院</h4>
+    			</div>
+    		</li>
+            <li>
+                <div class="tip" style="right:0;">
+                    <p>闯入纳米世界，窥探原子奥妙，制作神奇材料，设计集成系统。<br />微观尺度的“蝴蝶振翅”，牵动宏观世界的壮阔浪涛。<br />从大处着眼、小处着手，一起用新材料改变世界吧，我在梦想的大门口等你！</p>
+                    <h4><span class="name">张昌喆</span> 微电子与固体电子学院</h4>
+                </div>
+            </li>
+    	</ul>
+    </div>
+    <audio src="demo.mp3" controls="controls" style="display: none;">
+		Your browser does not support the audio element.
+	</audio>
+    <button id="stop">&boxV;</button>
+    
+    <script>
+        $(document).ready(function() {
+            //  Initialize Backgound Stretcher     
+            $('BODY').bgStretcher({
+                images: {{pics | tojson}},
+                imageWidth: 1980,
+                imageHeight: 1080,
+                slideDirection: 'N',
+                slideShowSpeed: 1000,
+                transitionEffect: 'fade',
+                sequenceMode: 'normal',
+                buttonPrev: '#prev',
+                buttonNext: '#next',
+                nextSlideDelay: '10000',
+                resizeProportionally: true,
+                anchoring: 'center center',
+                anchoringImg: 'center center'
+            });
+
+            var $intro = $('div.intro');
+            var $li = $intro.find("li");
+            var page = 1;
+            var page_count = $li.length;
+            var repeat = null;
+            var $next = $('#next');
+            var $prev = $('#prev');
+
+            $('li.active').fadeIn(1000);
+
+            function showIntro() {
+                $next.click();
+            }
+            repeat = setInterval(showIntro, 10000);
+
+            $next.click(function() {
+                if (!$li.is(":animated")) {
+                    if (page == page_count) {
+                        page = 1;
+                        $intro.find('li').eq(page - 1).fadeIn(1000).addClass("active").siblings().removeClass("active").fadeOut(300);
+                    } else {
+                        page++;
+                        $('li.active').removeClass("active").fadeOut(300).next().addClass("active").fadeIn(1000);
+                    }
+                }
+                clearInterval(repeat);
+                repeat = setInterval(showIntro, 10000);
+            });
+            $prev.click(function() {
+                if (!$li.is(":animated")) {
+                    if (page == 1) {
+                        page = page_count;
+                        $intro.find('li').eq(page - 1).fadeIn(1000).addClass("active").siblings().removeClass("active").fadeOut(300);
+                    } else {
+                        page--;
+                        $('li.active').removeClass("active").fadeOut(300).prev().addClass("active").fadeIn(1000);
+                    }
+                }
+                clearInterval(repeat);
+                repeat = setInterval(showIntro, 10000);
+            });
+
+            var audioElement = document.getElementsByTagName('audio')[0];
+
+            function PlayAudio() {
+                audioElement.load;
+                audioElement.play();
+            }
+
+            function PauseAudio() {
+                audioElement.pause();
+            }
+
+            PlayAudio();
+
+            var $stop = $("#stop");
+            $stop.toggle(function() {
+                $(this).css("backgroundPosition", "5px -40px");
+                PauseAudio();
+            }, function() {
+                $(this).css("backgroundPosition", "5px 10px");
+                PlayAudio();
+            });
+
+        });
+    </script>
+</body>
+</html>

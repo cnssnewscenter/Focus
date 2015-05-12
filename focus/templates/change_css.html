@@ -1,0 +1,45 @@
+{% extends "admin_base.html" %}
+{% from "admin_base.html" import menuitem %}
+{% block title %}仪表盘{% endblock %}
+{% block menu %}
+    {{ menuitem("项目概览", url_for("project_operation", project=project), "setting") }}
+    {{ menuitem("修改CSS", url_for("slide.slide_custom_css", project=project), "sitemap", active=True) }}
+{% endblock %}
+{% block css %}
+<style>
+    textarea{
+        font-family: monospace;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="sixteen wide column">
+        <div class="ui segments">
+            <div class="ui segment">
+                <h3 class="header">编辑 CSS</h3>
+            </div>
+            <div class="ui attached secondary segment">
+                <form class="ui form" action="{{url_for("slide.slide_custom_css", project=project)}}" method="post">
+                    <div class="field">
+                        <textarea name="css">{{css}}</textarea>
+                    </div>
+                    <button class="ui positive button" id="add">
+                        提交
+                    </button>
+                </form>
+
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+<script>
+    $("form").form().api({
+        url:"url_for("slide.slide_custom_css", project=project)",
+
+    })
+</script>
+
+{% endblock %}
